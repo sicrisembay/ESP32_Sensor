@@ -1,0 +1,4 @@
+menu "ESP32 Sensor Configuration"
+source ../../../Kconfig
+source ../../../INA219/Kconfig
+endmenu

@@ -1,0 +1,2 @@
+config SENSOR_INA219
+  bool "INA219"

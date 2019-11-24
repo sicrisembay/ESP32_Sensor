@@ -1,0 +1,139 @@
+menu "INA219 Configuration"
+    depends on SENSOR_INA219
+
+    choice INA219_PINNED_TO_CORE_CHOICE
+        prompt "The cpu core which INA219 sensor run"
+        depends on !FREERTOS_UNICORE
+        help
+            Specify the CPU core to run INA219
+        config INA219_PINNED_TO_CORE_0
+            bool "Core 0 (PRO CPU)"
+        config INA219_PINNED_TO_CORE_1
+            bool "Core 1 (APP CPU)"
+        config INA219_NO_CORE_AFFINITY
+            bool "No Affinity (PRO or APP CPU)"
+    endchoice
+    
+    config INA219_TASK_PRIORITY
+        int "INA219 Task Priority"
+        default 5
+        
+    config INA219_STACK_SIZE
+        int "Stack Size of INA219 Task"
+        default 2048
+
+    menu "I2C Configuration"
+        config INA219_I2C_PORT_NUM
+            int "I2C Master port used for INA219 Communication"
+            range 0 1
+            default 0
+        config INA219_I2C_CLK_FREQ
+            int "I2C Clock Frequency for INA219"
+            default 100000
+        config INA219_SDA_IO
+            int "INA219 I2C SDA IO"
+            default 13
+        config INA219_SCL_IO
+            int "INA219 I2C SCL IO"
+            default 15
+    endmenu
+
+    config INA219_DEVICE_COUNT
+        int "Number of devices on the I2C Bus"
+        range 1 3
+        default 1
+
+    menu "INA219 DEV1 Configuration"
+        depends on (INA219_DEVICE_COUNT >= 1)
+        config INA219_ADDR_DEV1
+            hex "I2C Address"
+            default 0x40
+        config INA219_MODE_DEV1
+            int "Mode Setting"
+            range 0 7
+            default 7
+        config INA219_SADC_DEV1
+            int "Shunt ADC Setting"
+            range 0 15
+            default 3
+        config INA219_BADC_DEV1
+            int "Bus ADC Setting"
+            range 0 15
+            default 3
+        config INA219_PGA_DEV1
+            int "PGA Setting"
+            range 0 3
+            default 3
+        config INA219_BUS_DEV1
+            int "Bus Voltage Range Setting"
+            range 0 1
+            default 1
+        config INA219_CAL_FS_DEV1
+            int "Current/Power Calibration"
+            range 0 65535
+            default 0
+    endmenu
+
+    menu "INA219 DEV2 Configuration"
+        depends on (INA219_DEVICE_COUNT >= 2)
+        config INA219_ADDR_DEV2
+            hex "I2C Address"
+            default 0x41
+        config INA219_MODE_DEV2
+            int "Mode Setting"
+            range 0 7
+            default 7
+        config INA219_SADC_DEV2
+            int "Shunt ADC Setting"
+            range 0 15
+            default 3
+        config INA219_BADC_DEV2
+            int "Bus ADC Setting"
+            range 0 15
+            default 3
+        config INA219_PGA_DEV2
+            int "PGA Setting"
+            range 0 3
+            default 3
+        config INA219_BUS_DEV2
+            int "Bus Voltage Range Setting"
+            range 0 1
+            default 1
+        config INA219_CAL_FS_DEV2
+            int "Current/Power Calibration"
+            range 0 65535
+            default 0
+    endmenu
+
+    menu "INA219 DEV3 Configuration"
+        depends on (INA219_DEVICE_COUNT >= 3)
+        config INA219_ADDR_DEV3
+            hex "I2C Address"
+            default 0x44
+        config INA219_MODE_DEV3
+            int "Mode Setting"
+            range 0 7
+            default 7
+        config INA219_SADC_DEV3
+            int "Shunt ADC Setting"
+            range 0 15
+            default 3
+        config INA219_BADC_DEV3
+            int "Bus ADC Setting"
+            range 0 15
+            default 3
+        config INA219_PGA_DEV3
+            int "PGA Setting"
+            range 0 3
+            default 3
+        config INA219_BUS_DEV3
+            int "Bus Voltage Range Setting"
+            range 0 1
+            default 1
+        config INA219_CAL_FS_DEV3
+            int "Current/Power Calibration"
+            range 0 65535
+            default 0
+    endmenu
+
+endmenu
