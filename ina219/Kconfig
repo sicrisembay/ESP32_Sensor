@@ -32,10 +32,10 @@ menu "INA219 Configuration"
             default 100000
         config INA219_SDA_IO
             int "INA219 I2C SDA IO"
-            default 13
+            default 22
         config INA219_SCL_IO
             int "INA219 I2C SCL IO"
-            default 15
+            default 23
     endmenu
 
     config INA219_DEVICE_COUNT
@@ -55,11 +55,11 @@ menu "INA219 Configuration"
         config INA219_SADC_DEV1
             int "Shunt ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_BADC_DEV1
             int "Bus ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_PGA_DEV1
             int "PGA Setting"
             range 0 3
@@ -86,11 +86,11 @@ menu "INA219 Configuration"
         config INA219_SADC_DEV2
             int "Shunt ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_BADC_DEV2
             int "Bus ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_PGA_DEV2
             int "PGA Setting"
             range 0 3
@@ -117,11 +117,11 @@ menu "INA219 Configuration"
         config INA219_SADC_DEV3
             int "Shunt ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_BADC_DEV3
             int "Bus ADC Setting"
             range 0 15
-            default 3
+            default 14
         config INA219_PGA_DEV3
             int "PGA Setting"
             range 0 3
