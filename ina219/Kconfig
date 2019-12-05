@@ -13,11 +13,13 @@ menu "INA219 Configuration"
         config INA219_NO_CORE_AFFINITY
             bool "No Affinity (PRO or APP CPU)"
     endchoice
-    
+
     config INA219_TASK_PRIORITY
         int "INA219 Task Priority"
         default 5
-        
+        help
+            Task priority of the INA219 sensor task
+
     config INA219_STACK_SIZE
         int "Stack Size of INA219 Task"
         default 2048
@@ -60,14 +62,23 @@ menu "INA219 Configuration"
             int "Bus ADC Setting"
             range 0 15
             default 14
+            
         config INA219_PGA_DEV1
             int "PGA Setting"
             range 0 3
             default 3
+            help
+                0 : Gain 1, +/-40mV Range
+                1 : Gain /2, +/-80mV Range
+                2 : Gain /4, +/-160mV Range
+                3 : Gain /8, +/-320mV Range
         config INA219_BUS_DEV1
             int "Bus Voltage Range Setting"
             range 0 1
             default 1
+        config INA219_R_DEV1
+            int "Shunt Resistance, milli-ohm"
+            default 100
         config INA219_CAL_FS_DEV1
             int "Current/Power Calibration"
             range 0 65535
@@ -95,10 +106,18 @@ menu "INA219 Configuration"
             int "PGA Setting"
             range 0 3
             default 3
+            help
+                0 : Gain 1, +/-40mV Range
+                1 : Gain /2, +/-80mV Range
+                2 : Gain /4, +/-160mV Range
+                3 : Gain /8, +/-320mV Range
         config INA219_BUS_DEV2
             int "Bus Voltage Range Setting"
             range 0 1
             default 1
+        config INA219_R_DEV2
+            int "Shunt Resistance, milli-ohm"
+            default 100
         config INA219_CAL_FS_DEV2
             int "Current/Power Calibration"
             range 0 65535
@@ -126,10 +145,18 @@ menu "INA219 Configuration"
             int "PGA Setting"
             range 0 3
             default 3
+            help
+                0 : Gain 1, +/-40mV Range
+                1 : Gain /2, +/-80mV Range
+                2 : Gain /4, +/-160mV Range
+                3 : Gain /8, +/-320mV Range
         config INA219_BUS_DEV3
             int "Bus Voltage Range Setting"
             range 0 1
             default 1
+        config INA219_R_DEV3
+            int "Shunt Resistance, milli-ohm"
+            default 100
         config INA219_CAL_FS_DEV3
             int "Current/Power Calibration"
             range 0 65535
