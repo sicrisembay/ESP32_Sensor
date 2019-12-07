@@ -20,6 +20,12 @@ static bool updateDly = true;
 #if (CONFIG_INA219_DEVICE_COUNT >= 1)
 #define CURRENT_LSB_DEV1            (float)(0.04096f / ((float)CONFIG_INA219_CAL_FS_DEV1 * (float)CONFIG_INA219_R_DEV1 * 0.001f))
 #endif
+#if (CONFIG_INA219_DEVICE_COUNT >= 2)
+#define CURRENT_LSB_DEV2            (float)(0.04096f / ((float)CONFIG_INA219_CAL_FS_DEV2 * (float)CONFIG_INA219_R_DEV2 * 0.001f))
+#endif
+#if (CONFIG_INA219_DEVICE_COUNT >= 3)
+#define CURRENT_LSB_DEV3            (float)(0.04096f / ((float)CONFIG_INA219_CAL_FS_DEV3 * (float)CONFIG_INA219_R_DEV3 * 0.001f))
+#endif
 
 typedef struct {
     union {
@@ -77,10 +83,10 @@ static uint8_t ina219_i2c_devAddr[CONFIG_INA219_DEVICE_COUNT] = {
 static float ina219_current_lsb[CONFIG_INA219_DEVICE_COUNT] = {
         CURRENT_LSB_DEV1,
 #if(CONFIG_INA219_DEVICE_COUNT > 1)
-#error "TODO"
-#if(CONFIG_INA219_DEVICE_COUNT > 2)
-#error "TODO"
+        CURRENT_LSB_DEV2,
 #endif
+#if(CONFIG_INA219_DEVICE_COUNT > 2)
+        CURRENT_LSB_DEV3,
 #endif
 };
 
