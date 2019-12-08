@@ -198,7 +198,7 @@ static esp_err_t _ina219_readReg(uint8_t id, uint8_t reg, uint16_t *pVal)
     return ESP_OK;
 }
 
-static esp_err_t _ina219_min_conversion_time(uint32_t *pVal)
+esp_err_t ina219_min_conversion_time(uint32_t *pVal)
 {
     uint32_t retval = CONVERSION_TIME[15];  /* largest conversion time */
     uint8_t idx = 0;
@@ -236,13 +236,19 @@ static void _ina219_task(void *pArg)
 
     while(1) {
         if(updateDly) {
-            retval = _ina219_min_conversion_time(&dly);
+            retval = ina219_min_conversion_time(&dly);
             if(retval == ESP_OK) {
+                /* Convert millisecond to kernel tick */
+                dly = dly / portTICK_PERIOD_MS;
+                if(dly < 1) {
+                    dly = 1;
+                }
                 updateDly = false;
             } else {
                 dly = 1;
             }
         }
+
         vTaskDelayUntil(&xLastWakeTime, dly);
         for(idx = 0; idx < CONFIG_INA219_DEVICE_COUNT; idx++) {
             if(ina219_flag[idx].sync_config_pending) {

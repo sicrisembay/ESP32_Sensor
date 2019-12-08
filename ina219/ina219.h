@@ -18,6 +18,7 @@ typedef enum {
 
 esp_err_t ina219_init(void);
 bool ina219_isInitialized(void);
+esp_err_t ina219_min_conversion_time(uint32_t *pVal);
 float ina219_get_bus_voltage(uint8_t devId, esp_err_t * pErr);
 float ina219_get_shunt_voltage(uint8_t devId, esp_err_t * pErr);
 float ina219_get_current(uint8_t devId, esp_err_t * pErr);

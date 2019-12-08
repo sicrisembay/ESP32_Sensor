@@ -9,6 +9,7 @@ static char ina219Str[128];
 void app_main()
 {
     esp_err_t retval = ESP_OK;
+    uint32_t dly = 1;
     ESP_LOGI(TAG, "*** INA219 Test ***");
     ESP_LOGI(TAG, "...initializing INA219");
     if(ESP_OK != ina219_init()) {
@@ -21,8 +22,18 @@ void app_main()
         vTaskDelay(10);
     }
 
+    if(ESP_OK == ina219_min_conversion_time(&dly)) {
+        /* Convert millisecond to kernel tick */
+        dly = dly / portTICK_PERIOD_MS;
+        if(dly < 1) {
+            dly = 1;
+        }
+    } else {
+        dly = 1;
+    }
+
     while(1) {
-        vTaskDelay(10);
+        vTaskDelay(dly);
 #if(CONFIG_INA219_DEVICE_COUNT >= 1)
         snprintf(ina219Str, sizeof(ina219Str) - 1,
                 "Dev1 (%0.2fV, %0.3fA, %0.3fW)",
