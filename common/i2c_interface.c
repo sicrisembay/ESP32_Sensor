@@ -68,6 +68,10 @@ esp_err_t i2c_interface_write(i2c_port_t i2c_num,
         ESP_LOGE(TAG, "I2C%d not initialized!", i2c_num);
         return ESP_FAIL;
     }
+    if((regLen == 0) && (dataLen == 0)) {
+        /* Nothing to write */
+        return ESP_OK;
+    }
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     retval = i2c_master_start(cmd);
@@ -140,54 +144,57 @@ esp_err_t i2c_interface_read(i2c_port_t i2c_num,
         return ESP_FAIL;
     }
 
-    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
-    retval = i2c_master_start(cmd);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return (retval);
-    }
-
-    retval = i2c_master_write_byte(cmd, (slave_addr << 1) | WRITE_BIT, ACK_CHECK_EN);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return (retval);
-    }
-
+    i2c_cmd_handle_t cmd;
+    
     if(regLen > 0) {
+        cmd = i2c_cmd_link_create();
+        retval = i2c_master_start(cmd);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return (retval);
+        }
+
+        retval = i2c_master_write_byte(cmd, (slave_addr << 1) | WRITE_BIT, ACK_CHECK_EN);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return (retval);
+        }
+
         retval = i2c_master_write(cmd, pReg, regLen, ACK_CHECK_EN);
         if(ESP_OK != retval) {
             i2c_cmd_link_delete(cmd);
             return(retval);
         }
-    }
+        
+        retval = i2c_master_stop(cmd);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return(retval);
+        }
 
-    retval = i2c_master_stop(cmd);
-    if(ESP_OK != retval) {
+        retval = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return(retval);
+        }
         i2c_cmd_link_delete(cmd);
-        return(retval);
     }
 
-    retval = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return(retval);
-    }
-    i2c_cmd_link_delete(cmd);
-
-    cmd = i2c_cmd_link_create();
-
-    retval = i2c_master_start(cmd);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return(retval);
-    }
-
-    retval = i2c_master_write_byte(cmd, slave_addr << 1 | READ_BIT, ACK_CHECK_EN);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return(retval);
-    }
     if(dataLen > 0) {
+        cmd = i2c_cmd_link_create();
+
+        retval = i2c_master_start(cmd);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return(retval);
+        }
+
+        retval = i2c_master_write_byte(cmd, slave_addr << 1 | READ_BIT, ACK_CHECK_EN);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return(retval);
+        }
+
         if(dataLen > 1) {
             retval = i2c_master_read(cmd, pData, dataLen - 1, ACK_VAL);
             if(ESP_OK != retval) {
@@ -200,20 +207,21 @@ esp_err_t i2c_interface_read(i2c_port_t i2c_num,
             i2c_cmd_link_delete(cmd);
             return (retval);
         }
+        
+        retval = i2c_master_stop(cmd);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return (retval);
+        }
+
+        retval = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
+        if(ESP_OK != retval) {
+            i2c_cmd_link_delete(cmd);
+            return (retval);
+        }
+        i2c_cmd_link_delete(cmd);
     }
 
-    retval = i2c_master_stop(cmd);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return (retval);
-    }
-
-    retval = i2c_master_cmd_begin(i2c_num, cmd, 1000 / portTICK_RATE_MS);
-    if(ESP_OK != retval) {
-        i2c_cmd_link_delete(cmd);
-        return (retval);
-    }
-    i2c_cmd_link_delete(cmd);
     return ESP_OK;
 }
 

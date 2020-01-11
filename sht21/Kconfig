@@ -1,0 +1,47 @@
+menu "SHT21 Configuration"
+    depends on SENSOR_SHT21
+
+    choice SHT21_PINNED_TO_CORE_CHOICE
+    prompt "The cpu core which SHT21 sensor run"
+    depends on !FREERTOS_UNICORE
+    help
+        Specify the CPU core to run SHT21
+    config SHT21_PINNED_TO_CORE_0
+        bool "Core 0 (PRO CPU)"
+    config SHT21_PINNED_TO_CORE_1
+        bool "Core 1 (APP CPU)"
+    config SHT21_NO_CORE_AFFINITY
+        bool "No Affinity (PRO or APP CPU)"
+    endchoice
+    
+    config SHT21_TASK_PRIORITY
+        int "SHT21 Task Priority"
+        default 5
+        help
+            Task priority of the SHT21 sensor task
+
+    config SHT21_STACK_SIZE
+        int "Stack Size of SHT21 Task"
+        default 2048
+
+    config SHT21_POLL_INTERVAL
+        int "Temperature and RH measurement interval in second"
+        default 1
+        
+    menu "I2C Configuration"
+        config SHT21_I2C_PORT_NUM
+            int "I2C Master port used for SHT21 Communication"
+            range 0 1
+            default 0
+        config SHT21_I2C_CLK_FREQ
+            int "I2C Clock Frequency for SHT21"
+            default 100000
+        config SHT21_SDA_IO
+            int "SHT21 I2C SDA IO"
+            default 22
+        config SHT21_SCL_IO
+            int "SHT21 I2C SCL IO"
+            default 23
+    endmenu
+    
+endmenu

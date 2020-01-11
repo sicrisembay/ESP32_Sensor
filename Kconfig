@@ -1,2 +1,5 @@
 config SENSOR_INA219
   bool "INA219"
+
+config SENSOR_SHT21
+  bool "SHT21"
