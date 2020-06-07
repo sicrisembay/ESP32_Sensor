@@ -1,5 +1,11 @@
 config SENSOR_INA219
   bool "INA219"
+  default n
 
 config SENSOR_SHT21
   bool "SHT21"
+  default n
+
+config SENSOR_ADS122C04
+  bool "ADS122C04"
+  default n

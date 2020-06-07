@@ -1,4 +1,4 @@
 menu "ESP32 Sensor Configuration"
 source "${ESP32_SENSOR_PATH}/Kconfig"
-source "${ESP32_SENSOR_PATH}/ina219/Kconfig"
+source "${ESP32_SENSOR_PATH}/ads122c04/Kconfig"
 endmenu

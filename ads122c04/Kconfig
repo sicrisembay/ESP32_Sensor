@@ -1,0 +1,83 @@
+menu "ADS122C04 Configuration"
+    depends on SENSOR_ADS122C04
+
+    choice ADS122C04_PINNED_TO_CORE_CHOICE
+        prompt "The cpu core which ADS122C04 sensor run"
+        depends on !FREERTOS_UNICORE
+        default ADS122C04_PINNED_TO_CORE_1
+        help
+            Specify the CPU core to run ADS122C04
+        config ADS122C04_PINNED_TO_CORE_0
+            bool "Core 0 (PRO CPU)"
+        config ADS122C04_PINNED_TO_CORE_1
+            bool "Core 1 (APP CPU)"
+        config ADS122C04_NO_CORE_AFFINITY
+            bool "No Affinity (PRO or APP CPU)"
+    endchoice
+    
+    config ADS122C04_TASK_PRIORITY
+        int "ADS122C04 Task Priority"
+        default 5
+        help
+            Task priority of the ADS122C04 sensor task
+
+    config ADS122C04_STACK_SIZE
+        int "Stack Size of ADS122C04 Task"
+        default 2048
+
+    menu "I/O Configuration"
+        config ADS122C04_I2C_PORT_NUM
+            int "I2C Master port used for ADS122C04 Communication"
+            range 0 1
+            default 0
+        config ADS122C04_I2C_CLK_FREQ
+            int "I2C Clock Frequency for ADS122C04"
+            default 100000
+        config ADS122C04_SDA_IO
+            int "ADS122C04 I2C SDA IO"
+            default 33
+        config ADS122C04_SCL_IO
+            int "ADS122C04 I2C SCL IO"
+            default 32
+        config ADS122C04_DRDY_IO
+            int "ADS122C04 DRDY IO"
+            default 27
+    endmenu
+
+    config ADS122C04_ADDR_DEV
+        hex "I2C Device Address"
+        default 0x40
+
+    choice ADS122C04_DATA_INTEGRITY
+        prompt "Data Integrity"
+        default ADS122C04_DATA_INTEGRITY_DISABLE
+        config ADS122C04_DATA_INTEGRITY_DISABLE
+            bool "Disabled"
+        config ADS122C04_DATA_INTEGRITY_INVERT
+            bool "Inverted Data"
+        config ADS122C04_DATA_INTEGRITY_CRC16
+            bool "CRC16"
+    endchoice
+
+    choice ADS122C04_PGA_GAIN
+        prompt "PGA Gain"
+        default ADS122C04_PGA_128
+        config ADS122C04_PGA_1
+            bool "PGA 1"
+        config ADS122C04_PGA_2
+            bool "PGA 2"
+        config ADS122C04_PGA_4
+            bool "PGA 4"
+        config ADS122C04_PGA_8
+            bool "PGA 8"
+        config ADS122C04_PGA_16
+            bool "PGA 16"
+        config ADS122C04_PGA_32
+            bool "PGA 32"
+        config ADS122C04_PGA_64
+            bool "PGA 64"
+        config ADS122C04_PGA_128
+            bool "PGA 128"
+    endchoice
+
+endmenu # "ADS122C04 Configuration"
