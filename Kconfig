@@ -58,3 +58,9 @@ config SENSOR_ADS122C04
   bool "ADS122C04"
   default n
 source "$(ESP32_SENSOR_PATH)/ads122c04/Kconfig"
+
+config SENSOR_TOUCHSCREEN
+  depends on (SENSOR_I2C_BUS_COUNT > 0)
+  bool "Touchscreen"
+  default n
+source "$(ESP32_SENSOR_PATH)/touchscreen/Kconfig"

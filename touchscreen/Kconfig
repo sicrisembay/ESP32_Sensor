@@ -1,0 +1,45 @@
+menu "Touchscreen Configuration"
+    depends on SENSOR_TOUCHSCREEN
+
+    choice TC_PINNED_TO_CORE_CHOICE
+        prompt "The cpu core to run touchscreen"
+        depends on !FREERTOS_UNICORE
+        default TC_PINNED_TO_CORE_1
+        help
+            Specify the cpu core to run touch
+        config TC_PINNED_TO_CORE_0
+            bool "Core 0 (PRO CPU)"
+        config TC_PINNED_TO_CORE_1
+            bool "Core 1 (APP CPU)"
+        config TC_NO_CORE_AFFINITY
+            bool "No Affinity (PRO or APP CPU)"
+    endchoice
+
+    config TC_TASK_STACK_SIZE
+        int "Touch Task Stack Size"
+        default 2048
+
+    config TC_TASK_PRIORITY
+        int "Touch Task Priority"
+        default 1
+
+    choice TC_DRIVER_IC
+        prompt "Touch Driver IC"
+        config TC_DRIVER_FT6336
+            bool "Focaltech FT6336"
+    endchoice
+
+    config TC_I2C_PORT_NUM
+        int "I2C Master Bus"
+        range 0 1
+        default 0
+    config TC_SLAVE_ADDR
+        hex "Touch IC I2C slave address"
+        default 0x38
+    config TC_RESET_IO_PIN
+        int "Touch IC Reset IO pin"
+        default 5
+    config TC_INT_IO_PIN
+        int "Touch IC Interrupt IO pin"
+        default 35
+endmenu
