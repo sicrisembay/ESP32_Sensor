@@ -24,21 +24,10 @@ menu "INA219 Configuration"
         int "Stack Size of INA219 Task"
         default 2048
 
-    menu "I2C Configuration"
-        config INA219_I2C_PORT_NUM
-            int "I2C Master port used for INA219 Communication"
-            range 0 1
-            default 0
-        config INA219_I2C_CLK_FREQ
-            int "I2C Clock Frequency for INA219"
-            default 100000
-        config INA219_SDA_IO
-            int "INA219 I2C SDA IO"
-            default 22
-        config INA219_SCL_IO
-            int "INA219 I2C SCL IO"
-            default 23
-    endmenu
+    config INA219_I2C_PORT_NUM
+        int "I2C Master Bus"
+        range 0 1
+        default 0
 
     config INA219_DEVICE_COUNT
         int "Number of devices on the I2C Bus"

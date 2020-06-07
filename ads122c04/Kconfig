@@ -25,24 +25,13 @@ menu "ADS122C04 Configuration"
         int "Stack Size of ADS122C04 Task"
         default 2048
 
-    menu "I/O Configuration"
-        config ADS122C04_I2C_PORT_NUM
-            int "I2C Master port used for ADS122C04 Communication"
-            range 0 1
-            default 0
-        config ADS122C04_I2C_CLK_FREQ
-            int "I2C Clock Frequency for ADS122C04"
-            default 100000
-        config ADS122C04_SDA_IO
-            int "ADS122C04 I2C SDA IO"
-            default 33
-        config ADS122C04_SCL_IO
-            int "ADS122C04 I2C SCL IO"
-            default 32
-        config ADS122C04_DRDY_IO
-            int "ADS122C04 DRDY IO"
-            default 27
-    endmenu
+    config ADS122C04_I2C_PORT_NUM
+        int "I2C Master Bus"
+        range 0 1
+        default 0
+    config ADS122C04_DRDY_IO
+        int "ADS122C04 DRDY IO"
+        default 27
 
     config ADS122C04_ADDR_DEV
         hex "I2C Device Address"

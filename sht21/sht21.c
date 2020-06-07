@@ -163,19 +163,12 @@ static void _sht21_task(void *pArg)
 esp_err_t sht21_init(void)
 {
     esp_err_t retval = ESP_OK;
-    i2c_config_t conf;
 
     if(bInit == true) {
         /* Already initialized */
         return ESP_OK;
     }
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = CONFIG_SHT21_SDA_IO;
-    conf.sda_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.scl_io_num = CONFIG_SHT21_SCL_IO;
-    conf.scl_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.master.clk_speed = CONFIG_SHT21_I2C_CLK_FREQ;
-    retval = i2c_interface_init(CONFIG_SHT21_I2C_PORT_NUM, &conf);
+    retval = i2c_interface_init();
     if(retval != ESP_OK) {
         ESP_LOGE(TAG, "Failed to init I2C%d", CONFIG_SHT21_I2C_PORT_NUM);
         return(retval);

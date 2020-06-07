@@ -5,9 +5,11 @@
 
 PROJECT_NAME := test_ADS122C04
 
-ifndef ESP32_SENSOR_PATH
-$(error ESP32_SENSOR_PATH variable is not set to a valid directory.)
-endif
+# Get Path of ESP32_Sensor
+ESP32_SENSOR_PATH := $(dir $(CURDIR))
+ESP32_SENSOR_PATH := $(dir $(ESP32_SENSOR_PATH:%/=%))
+$(info ESP32_SENSOR_PATH is $(ESP32_SENSOR_PATH))
+export ESP32_SENSOR_PATH
 
 ifndef IDF_PATH
 $(error IDF_PATH variable is not set to a valid directory.)

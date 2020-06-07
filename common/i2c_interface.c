@@ -13,33 +13,81 @@
 
 static const char* TAG = "i2c_interface";
 
-static bool bInit[I2C_NUM_MAX] = {
-        false,
-        false
+static bool bInit[N_I2C_BUS] = {
+#if (CONFIG_SENSOR_I2C_BUS_COUNT >= 1)
+    false,
+#if (CONFIG_SENSOR_I2C_BUS_COUNT >= 2)
+    false,
+#endif
+#endif
 };
 
-esp_err_t i2c_interface_init(i2c_port_t i2c_num, const i2c_config_t * i2c_conf)
+static i2c_config_t const I2C_BUS_DEFAULT[N_I2C_BUS] = {
+#if (CONFIG_SENSOR_I2C_BUS_COUNT >= 1)
+    {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = CONFIG_I2C0_SDA_IO,
+        .scl_io_num = CONFIG_I2C0_SCL_IO,
+#if defined(CONFIG_I2C0_SDA_PULL_UP)
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+#else
+        .sda_pullup_en = GPIO_PULLUP_DISABLE,
+#endif
+#if defined(CONFIG_I2C0_SDA_PULL_UP)
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+#else
+        .scl_pullup_en = GPIO_PULLUP_DISABLE,
+#endif
+        {
+            .master.clk_speed = CONFIG_I2C0_FREQ
+        }
+    },
+#if (CONFIG_SENSOR_I2C_BUS_COUNT >= 2)
+    {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = CONFIG_I2C1_SDA_IO,
+        .scl_io_num = CONFIG_I2C1_SCL_IO,
+#if defined(CONFIG_I2C1_SDA_PULL_UP)
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+#else
+        .sda_pullup_en = GPIO_PULLUP_DISABLE,
+#endif
+#if defined(CONFIG_I2C1_SDA_PULL_UP)
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+#else
+        .scl_pullup_en = GPIO_PULLUP_DISABLE,
+#endif
+        {
+            .master.clk_speed = CONFIG_I2C1_FREQ
+        }
+    },
+#endif
+#endif
+};
+
+esp_err_t i2c_interface_init(void)
 {
     esp_err_t retval = ESP_OK;
+    uint32_t i = 0;
 
-    if((i2c_num >= I2C_NUM_MAX) || (i2c_conf == NULL)) {
-        ESP_LOGE(TAG,"Invalid Arg!");
-        return ESP_ERR_INVALID_ARG;
+    for(i = 0; i < N_I2C_BUS; i++) {
+        if(bInit[i] == false) {
+            retval = i2c_param_config((i2c_port_t)i, &(I2C_BUS_DEFAULT[i]));
+            if(retval != ESP_OK) {
+                return(retval);
+            }
+
+            retval = i2c_driver_install((i2c_port_t)i, I2C_MODE_MASTER, 0, 0, 0);
+            if(retval != ESP_OK) {
+                return (retval);
+            }
+
+            bInit[i] = true;
+            ESP_LOGI(TAG, "I2C_MASTER_%d Initialized.", i);
+
+        }
     }
-    if(bInit[i2c_num] == true) {
-        ESP_LOGI(TAG, "Already initialized.  Skipping initailization.");
-        return ESP_OK;
-    }
-    retval = i2c_param_config(i2c_num, i2c_conf);
-    if(retval != ESP_OK) {
-        return(retval);
-    }
-    retval = i2c_driver_install(i2c_num, I2C_MODE_MASTER, 0, 0, 0);
-    if(retval != ESP_OK) {
-        return (retval);
-    }
-    bInit[i2c_num] = true;
-    ESP_LOGI(TAG, "I2C_MASTER_%d Initialized.", i2c_num);
+
     return ESP_OK;
 }
 
@@ -60,7 +108,7 @@ esp_err_t i2c_interface_write(i2c_port_t i2c_num,
         ESP_LOGE(TAG, "Invalid pData!");
         return ESP_ERR_INVALID_ARG;
     }
-    if(i2c_num >= I2C_NUM_MAX) {
+    if(i2c_num >= N_I2C_BUS) {
         ESP_LOGE(TAG, "Invalid I2C_NUM!");
         return ESP_ERR_INVALID_ARG;
     }
@@ -135,7 +183,7 @@ esp_err_t i2c_interface_read(i2c_port_t i2c_num,
         ESP_LOGE(TAG, "Invalid pData!");
         return ESP_ERR_INVALID_ARG;
     }
-    if(i2c_num >= I2C_NUM_MAX) {
+    if(i2c_num >= N_I2C_BUS) {
         ESP_LOGE(TAG, "Invalid I2C_NUM!");
         return ESP_ERR_INVALID_ARG;
     }

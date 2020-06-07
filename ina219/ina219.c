@@ -133,13 +133,6 @@ static ina219_dev_t const ina219_dev_default[CONFIG_INA219_DEVICE_COUNT] = {
 #endif
 };
 
-static float const PGA_DIV[4] = {
-        1.0f,
-        2.0f,
-        4.0f,
-        8.0f
-};
-
 static uint32_t const CONVERSION_TIME[16] = {
         1,  // 84us --> 1ms (smallest value is kernel tick)
         1,  // 148us
@@ -309,20 +302,13 @@ static void _ina219_task(void *pArg)
 esp_err_t ina219_init(void)
 {
     esp_err_t retval = ESP_OK;
-    i2c_config_t conf;
     uint8_t idx = 0;
 
     if(bInit == true) {
         /* Already initialized */
         return ESP_OK;
     }
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = CONFIG_INA219_SDA_IO;
-    conf.sda_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.scl_io_num = CONFIG_INA219_SCL_IO;
-    conf.scl_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.master.clk_speed = CONFIG_INA219_I2C_CLK_FREQ;
-    retval = i2c_interface_init(CONFIG_INA219_I2C_PORT_NUM, &conf);
+    retval = i2c_interface_init();
     if(retval != ESP_OK) {
         ESP_LOGE(TAG, "Failed to init I2C%d", CONFIG_INA219_I2C_PORT_NUM);
         return(retval);

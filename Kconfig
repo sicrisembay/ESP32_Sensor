@@ -1,11 +1,60 @@
+menu "I2C Bus Configuration"
+  config SENSOR_I2C_BUS_COUNT
+    int "Number of I2C Bus"
+    range 1 2
+    default 1
+  menu "Bus0 Configuration"
+    depends on (SENSOR_I2C_BUS_COUNT >= 1)
+    config I2C0_SDA_IO
+      int "SDA IO Pin"
+      default 33
+    config I2C0_SDA_PULL_UP
+      bool "Enable SDA Internal Pull-up"
+      default n
+    config I2C0_SCL_IO
+      int "SCL IO Pin"
+      default 32
+    config I2C0_SCL_PULL_UP
+      bool "Enable SCL Internal Pull-up"
+      default n
+    config I2C0_FREQ
+      int "Clock Frequency, Hz"
+      default 100000
+  endmenu
+  menu "Bus1 Configuration"
+    depends on (SENSOR_I2C_BUS_COUNT >= 2)
+    config I2C1_SDA_IO
+      int "SDA IO Pin"
+      default 4
+    config I2C1_SDA_PULL_UP
+      bool "Enable SDA Internal Pull-up"
+      default n
+    config I2C1_SCL_IO
+      int "SCL IO Pin"
+      default 27
+    config I2C1_SCL_PULL_UP
+      bool "Enable SCL Internal Pull-up"
+      default n
+    config I2C1_FREQ
+      int "Clock Frequency, Hz"
+      default 100000
+  endmenu
+endmenu # "I2C Bus Configuration"
+
 config SENSOR_INA219
+  depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "INA219"
   default n
+source "$(ESP32_SENSOR_PATH)/ina219/Kconfig"
 
 config SENSOR_SHT21
+  depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "SHT21"
   default n
+source "$(ESP32_SENSOR_PATH)/sht21/Kconfig"
 
 config SENSOR_ADS122C04
+  depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "ADS122C04"
   default n
+source "$(ESP32_SENSOR_PATH)/ads122c04/Kconfig"

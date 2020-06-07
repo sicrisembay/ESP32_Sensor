@@ -168,7 +168,6 @@ static void _ads122c04_task(void *pArg)
 esp_err_t ads122c04_init(void)
 {
     esp_err_t retval = ESP_OK;
-    i2c_config_t conf;
     gpio_config_t io_conf;
 
     if(bInit == true) {
@@ -188,13 +187,7 @@ esp_err_t ads122c04_init(void)
         return(retval);
     }
     /* I2C */
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = CONFIG_ADS122C04_SDA_IO;
-    conf.sda_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.scl_io_num = CONFIG_ADS122C04_SCL_IO;
-    conf.scl_pullup_en = GPIO_PULLUP_DISABLE;       /* external Pull-up resistor is present in board */
-    conf.master.clk_speed = CONFIG_ADS122C04_I2C_CLK_FREQ;
-    retval = i2c_interface_init(CONFIG_ADS122C04_I2C_PORT_NUM, &conf);
+    retval = i2c_interface_init();
     if(retval != ESP_OK) {
         ESP_LOGE(TAG, "Failed to init I2C%d", CONFIG_ADS122C04_I2C_PORT_NUM);
         return(retval);

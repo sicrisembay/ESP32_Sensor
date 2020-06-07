@@ -28,20 +28,9 @@ menu "SHT21 Configuration"
         int "Temperature and RH measurement interval in second"
         default 1
         
-    menu "I2C Configuration"
-        config SHT21_I2C_PORT_NUM
-            int "I2C Master port used for SHT21 Communication"
-            range 0 1
-            default 0
-        config SHT21_I2C_CLK_FREQ
-            int "I2C Clock Frequency for SHT21"
-            default 100000
-        config SHT21_SDA_IO
-            int "SHT21 I2C SDA IO"
-            default 22
-        config SHT21_SCL_IO
-            int "SHT21 I2C SCL IO"
-            default 23
-    endmenu
-    
+    config SHT21_I2C_PORT_NUM
+        int "I2C Master Bus"
+        range 0 1
+        default 0
+
 endmenu
