@@ -89,6 +89,7 @@ static const char *TAG = "ads122c04";
 static DRAM_ATTR TaskHandle_t ads122c04_task_handle = NULL;
 static bool bInit = false;
 static ads122c04_record_t ads122c04_record;
+static conversion_cb_t conversion_cb = NULL;
 
 static void IRAM_ATTR _drdy_isr_handler(void * arg)
 {
@@ -108,11 +109,17 @@ static void _ads122c04_task(void *pArg)
     int32_t rawData;
     uint8_t regAddr = 0;
     uint8_t dummy;
+    esp_err_t ret = ESP_OK;
     uint8_t dataBuf[3];
 
     /* Install isr service for DRDY */
+    ret = gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
+    if(ESP_ERR_INVALID_STATE == ret) {
+        /* Already installed by someone else */
+    } else {
+        ESP_ERROR_CHECK(ret);
+    }
     ESP_ERROR_CHECK(gpio_set_intr_type(CONFIG_ADS122C04_DRDY_IO, GPIO_INTR_NEGEDGE));
-    ESP_ERROR_CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
     ESP_ERROR_CHECK(gpio_isr_handler_add(CONFIG_ADS122C04_DRDY_IO, _drdy_isr_handler,
                     (void*)CONFIG_ADS122C04_DRDY_IO));
 
@@ -158,6 +165,9 @@ static void _ads122c04_task(void *pArg)
                         rawData |= 0xFF000000;
                     }
                     ads122c04_record.rawData = rawData;
+                    if(conversion_cb != NULL) {
+                        (*conversion_cb)(rawData);
+                    }
                 }
         }
     }
@@ -165,7 +175,7 @@ static void _ads122c04_task(void *pArg)
     vTaskDelete(NULL);
 }
 
-esp_err_t ads122c04_init(void)
+esp_err_t ads122c04_init(conversion_cb_t cb)
 {
     esp_err_t retval = ESP_OK;
     gpio_config_t io_conf;
@@ -174,6 +184,8 @@ esp_err_t ads122c04_init(void)
         /* Already initialized */
         return ESP_OK;
     }
+
+    conversion_cb = cb;
 
     /* ADS122C04 Data Ready */
     io_conf.intr_type = GPIO_PIN_INTR_DISABLE;

@@ -6,7 +6,9 @@
 
 #include "esp_err.h"
 
-esp_err_t ads122c04_init(void);
+typedef void (* conversion_cb_t)(int32_t);
+
+esp_err_t ads122c04_init(conversion_cb_t cb);
 bool ads122c04_isInitialized(void);
 int32_t ads122c04_getRaw(void);
 

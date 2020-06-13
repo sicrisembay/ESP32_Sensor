@@ -73,8 +73,13 @@ static void _touch_task(void * pArg)
     /*
      * Install gpio isr service
      */
+    ret = gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
+    if(ESP_ERR_INVALID_STATE == ret) {
+        /* Already installed by someone else */
+    } else {
+        ESP_ERROR_CHECK(ret);
+    }
     ESP_ERROR_CHECK(gpio_set_intr_type(CONFIG_TC_INT_IO_PIN, GPIO_INTR_NEGEDGE));
-    ESP_ERROR_CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
     ESP_ERROR_CHECK(gpio_isr_handler_add(CONFIG_TC_INT_IO_PIN, _touch_int_isr_handler, (void*)CONFIG_TC_INT_IO_PIN));
 
     bInit = true;
