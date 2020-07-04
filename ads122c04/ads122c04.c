@@ -71,10 +71,24 @@ typedef struct {
     REG3 reg3;
 } ADS122C04_REG;
 
+#if defined(CONFIG_ADS122C04_DATA_INTEGRITY_DISABLE)
+#define READ_BUF_SIZE       (3)
+#elif defined(CONFIG_ADS122C04_DATA_INTEGRITY_INVERT)
+#define READ_BUF_SIZE       (6)
+#else
+#error "Unsupported Data Integrity Configuration"
+#endif
+
 static ADS122C04_REG const reg_default = {
     .reg0.byte = 0x4E,  // AINP=AIN1, AINN=AIN2, GAIN=128, PGA Enabled
     .reg1.byte = 0x0C,
+#if defined(CONFIG_ADS122C04_DATA_INTEGRITY_DISABLE)
     .reg2.byte = 0x00,
+#elif defined(CONFIG_ADS122C04_DATA_INTEGRITY_INVERT)
+    .reg2.byte = 0x10,
+#else
+#error "Unsupported Data Integrity Configuration"
+#endif
     .reg3.byte = 0x00
 };
 
@@ -110,7 +124,7 @@ static void _ads122c04_task(void *pArg)
     uint8_t regAddr = 0;
     uint8_t dummy;
     esp_err_t ret = ESP_OK;
-    uint8_t dataBuf[3];
+    uint8_t dataBuf[READ_BUF_SIZE];
 
     /* Install isr service for DRDY */
     ret = gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
@@ -159,8 +173,22 @@ static void _ads122c04_task(void *pArg)
                 if(notifyFlag & ADS122C04_NOTIFY_RDY_FLAG) {
                     regAddr = ADS122C04_RDATA;
                     ESP_ERROR_CHECK(i2c_interface_read(CONFIG_ADS122C04_I2C_PORT_NUM,
-                        CONFIG_ADS122C04_ADDR_DEV, &regAddr, 1, (unsigned char *)&dataBuf, 3));
-                    rawData = (int32_t)((((uint32_t)dataBuf[0]) << 16) + (((uint32_t)dataBuf[1]) << 8) + ((uint32_t)dataBuf[0]));
+                        CONFIG_ADS122C04_ADDR_DEV, &regAddr, 1, (unsigned char *)&dataBuf, READ_BUF_SIZE));
+#if defined(CONFIG_ADS122C04_DATA_INTEGRITY_DISABLE)
+                    rawData = (int32_t)((((uint32_t)dataBuf[0]) << 16) + (((uint32_t)dataBuf[1]) << 8) + ((uint32_t)dataBuf[2]));
+#elif defined(CONFIG_ADS122C04_DATA_INTEGRITY_INVERT)
+                    /* Check by bitwise-inversion */
+                    if(((dataBuf[0] & dataBuf[3]) == 0) &&
+                       ((dataBuf[1] & dataBuf[4]) == 0) &&
+                       ((dataBuf[2] & dataBuf[5]) == 0)) {
+                        rawData = (int32_t)((((uint32_t)dataBuf[0]) << 16) + (((uint32_t)dataBuf[1]) << 8) + ((uint32_t)dataBuf[2]));
+                    } else {
+                        ESP_LOGE(TAG, "Data integrity failed!");
+                        continue;
+                    }
+#else
+#error "Unsupported Data Integrity Configuration"
+#endif
                     if(dataBuf[0] & 0x80) {
                         rawData |= 0xFF000000;
                     }
