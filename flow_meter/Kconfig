@@ -1,0 +1,21 @@
+menu "Flow meter Configuration"
+    depends on SENSOR_FLOW_METER
+
+    config FLOW_METER_PCNT_UNIT
+        int "Uses PCNT Peripheral Unit"
+        range 0 3
+        default 0
+
+    config FLOW_METER_IO_PIN
+        int "Flow meter IO pin"
+        default 21
+
+    config FLOW_METER_ML_PER_PULSE
+        int "milliliter per pulse (Q16 Format)"
+        default 30147
+
+    config FLOW_METER_COUNT_ON_BOTH_EDGE
+        bool "Count on both rising and falling edges"
+        default y
+
+endmenu # "Flow meter Configuration"

@@ -64,3 +64,8 @@ config SENSOR_TOUCHSCREEN
   bool "Touchscreen"
   default n
 source "$(ESP32_SENSOR_PATH)/touchscreen/Kconfig"
+
+config SENSOR_FLOW_METER
+  bool "Flow meter"
+  default y
+source "$(ESP32_SENSOR_PATH)/flow_meter/Kconfig"
