@@ -31,7 +31,7 @@ menu "ADS122C04 Configuration"
         default 0
     config ADS122C04_DRDY_IO
         int "ADS122C04 DRDY IO"
-        default 27
+        default 36
 
     config ADS122C04_ADDR_DEV
         hex "I2C Device Address"
@@ -39,7 +39,7 @@ menu "ADS122C04 Configuration"
 
     choice ADS122C04_DATA_INTEGRITY
         prompt "Data Integrity"
-        default ADS122C04_DATA_INTEGRITY_DISABLE
+        default ADS122C04_DATA_INTEGRITY_INVERT
         config ADS122C04_DATA_INTEGRITY_DISABLE
             bool "Disabled"
         config ADS122C04_DATA_INTEGRITY_INVERT

@@ -1,0 +1,40 @@
+menu "ICM-20600 Configuration"
+    depends on SENSOR_ICM20600
+
+    choice ICM20600_PINNED_TO_CORE_CHOICE
+        prompt "The cpu core which ICM20600 sensor run"
+        depends on !FREERTOS_UNICORE
+        default ICM20600_PINNED_TO_CORE_1
+        help
+            Specify the CPU core to run ICM-20600
+        config ICM20600_PINNED_TO_CORE_0
+            bool "Core 0 (PRO CPU)"
+        config ICM20600_PINNED_TO_CORE_1
+            bool "Core 1 (APP CPU)"
+        config ICM20600_NO_CORE_AFFINITY
+            bool "No Affinity (PRO or APP CPU)"
+    endchoice
+    
+    config ICM20600_TASK_PRIORITY
+        int "ICM-20600 Task Priority"
+        default 5
+        help
+            Task priority of the ICM-20600 sensor task
+
+    config ICM20600_STACK_SIZE
+        int "Stack Size of ICM-20600 Task"
+        default 2048
+
+    config ICM20600_I2C_PORT_NUM
+        int "I2C Master Bus"
+        range 0 1
+        default 0
+    config ICM20600_DRDY_IO
+        int "ICM-20600 DRDY IO"
+        default 39
+
+    config ICM20600_ADDR_DEV
+        hex "I2C Device Address"
+        default 0x68
+
+endmenu # "ICM-20600 Configuration"

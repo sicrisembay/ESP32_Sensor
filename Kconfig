@@ -56,16 +56,21 @@ source "$(ESP32_SENSOR_PATH)/sht21/Kconfig"
 config SENSOR_ADS122C04
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "ADS122C04"
-  default n
+  default y
 source "$(ESP32_SENSOR_PATH)/ads122c04/Kconfig"
 
 config SENSOR_TOUCHSCREEN
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "Touchscreen"
-  default n
+  default y
 source "$(ESP32_SENSOR_PATH)/touchscreen/Kconfig"
 
 config SENSOR_FLOW_METER
   bool "Flow meter"
   default y
 source "$(ESP32_SENSOR_PATH)/flow_meter/Kconfig"
+
+config SENSOR_ICM20600
+  bool "ICM-20600"
+  default y
+source "$(ESP32_SENSOR_PATH)/icm20600/Kconfig"
