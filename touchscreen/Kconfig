@@ -27,6 +27,8 @@ menu "Touchscreen Configuration"
         prompt "Touch Driver IC"
         config TC_DRIVER_FT6336
             bool "Focaltech FT6336"
+        config TC_DRIVER_GT911
+            bool "Goodix GT911"
     endchoice
 
     config TC_I2C_PORT_NUM
@@ -35,11 +37,18 @@ menu "Touchscreen Configuration"
         default 0
     config TC_SLAVE_ADDR
         hex "Touch IC I2C slave address"
-        default 0x38
+        default 0x38 if TC_DRIVER_FT6336
+        default 0x5D if TC_DRIVER_GT911
     config TC_RESET_IO_PIN
         int "Touch IC Reset IO pin"
         default 5
     config TC_INT_IO_PIN
         int "Touch IC Interrupt IO pin"
         default 35
+    config TC_INT_PULL_UP
+        bool "Enable INT Pin Internal Pull-up"
+        default y
+    config TC_DRIVER_DEBUG
+        bool "Print debug log"
+        default y
 endmenu

@@ -12,10 +12,12 @@ void app_main()
     int16_t y;
     ESP_LOGI(TAG, "*** Touchscreen Test ***");
     ESP_LOGI(TAG, "...initializing");
-    if(ESP_OK != touchscreen_init()) {
+    retval = touchscreen_init();
+    if(ESP_OK != retval) {
         ESP_LOGE(TAG, "Touchscreen Init Error!");
         return;
     }
+    vTaskDelay(1000);
     ESP_LOGI(TAG, "Touchscreen initialized.");
 
     while(1) {
