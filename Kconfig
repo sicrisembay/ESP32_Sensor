@@ -45,32 +45,32 @@ config SENSOR_INA219
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "INA219"
   default n
-source "$(ESP32_SENSOR_PATH)/ina219/Kconfig"
+rsource "ina219/Kconfig"
 
 config SENSOR_SHT21
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "SHT21"
   default n
-source "$(ESP32_SENSOR_PATH)/sht21/Kconfig"
+rsource "sht21/Kconfig"
 
 config SENSOR_ADS122C04
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "ADS122C04"
   default n
-source "$(ESP32_SENSOR_PATH)/ads122c04/Kconfig"
+rsource "ads122c04/Kconfig"
 
 config SENSOR_TOUCHSCREEN
   depends on (SENSOR_I2C_BUS_COUNT > 0)
   bool "Touchscreen"
   default n
-source "$(ESP32_SENSOR_PATH)/touchscreen/Kconfig"
+rsource "touchscreen/Kconfig"
 
 config SENSOR_FLOW_METER
   bool "Flow meter"
   default n
-source "$(ESP32_SENSOR_PATH)/flow_meter/Kconfig"
+rsource "flow_meter/Kconfig"
 
 config SENSOR_ICM20600
   bool "ICM-20600"
   default n
-source "$(ESP32_SENSOR_PATH)/icm20600/Kconfig"
+rsource "icm20600/Kconfig"
